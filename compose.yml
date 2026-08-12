@@ -1,0 +1,34 @@
+services:
+
+  # API (Express + Drizzle + SQLite)
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "${API_PORT:-3000}:3000"
+    volumes:
+      - ./data:/data
+    environment:
+      PORT: "3000"
+      DB_PATH: /data/budget.db
+      NODE_ENV: development
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Web UI (React SPA served by nginx)
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
