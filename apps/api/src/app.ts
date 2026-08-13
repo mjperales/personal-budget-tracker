@@ -3,6 +3,7 @@ import cors from 'cors';
 import type { Config } from './config.js';
 import { healthRouter } from './routes/health.routes.js';
 import { transactionsRouter } from './routes/transactions.routes.js';
+import { summaryRouter } from './routes/summary.routes.js';
 import { errorHandler } from './middleware/error-handler.js';
 
 export function createApp(config: Partial<Config> = {}) {
@@ -35,6 +36,7 @@ export function createApp(config: Partial<Config> = {}) {
 
   app.use('/api/v1', healthRouter);
   app.use('/api/v1/transactions', transactionsRouter);
+  app.use('/api/v1/summary', summaryRouter);
 
   // 404 handler for unmatched routes
   app.use((_req, res) => {

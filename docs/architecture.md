@@ -8,7 +8,7 @@ This document describes the system architecture for agents working in this codeb
 |-------|-----------|---------|---------|
 | **Package Manager** | pnpm | Workspace management, fast installs | 9+ |
 | **Backend** | Express | REST API server | 4.x |
-| **Database** | SQLite + Drizzle ORM | Local-first data persistence | - |
+| **Persistence** | In-memory store | Transaction storage (encapsulated) | - |
 | **Frontend** | React 19 | UI framework | 19.x |
 | **Build Tool** | Vite | Dev server, production builds | 6.x |
 | **Styling** | Tailwind CSS v4 | Utility-first CSS (CSS-first config) | 4.0-beta |
@@ -30,9 +30,9 @@ personal-budget-tracker/
 │   │   │   ├── config.ts       # Zod-validated environment config
 │   │   │   ├── routes/         # Express routers (HTTP layer)
 │   │   │   ├── middleware/     # CORS, error handling, etc.
-│   │   │   ├── services/       # Business logic, ORM operations
-│   │   │   └── db/             # Drizzle schema, migrations
-│   │   ├── drizzle.config.ts   # Drizzle configuration
+│   │   │   ├── models/         # Domain models and Zod schemas
+│   │   │   ├── stores/         # In-memory data stores
+│   │   │   └── lib/            # Utilities (responses, errors)
 │   │   └── Dockerfile          # API container
 │   │
 │   └── web/                    # React SPA
@@ -64,16 +64,49 @@ Current version: `/api/v1`
 All routes are mounted under version prefix:
 ```typescript
 app.use('/api/v1', healthRouter);
-app.use('/api/v1', transactionsRouter);
+app.use('/api/v1/transactions', transactionsRouter);
+app.use('/api/v1/summary', summaryRouter);
 ```
 
 This allows introducing `/api/v2` without breaking existing clients.
 
+### API Endpoints
+
+**Health Check**
+```
+GET /api/v1/health
+Response: { data: { status: "ok" } }
+```
+
+**Transactions**
+```
+GET /api/v1/transactions
+Query params: ?type=income|expense&category=Food&search=groceries
+Response: { data: Transaction[] }
+
+POST /api/v1/transactions
+Body: { date, description, amount, type, category }
+Response: { data: Transaction }
+
+PUT /api/v1/transactions/:id
+Body: { date, description, amount, type, category }
+Response: { data: Transaction }
+
+DELETE /api/v1/transactions/:id
+Response: 204 No Content
+```
+
+**Summary**
+```
+GET /api/v1/summary
+Response: { data: { income: number, expenses: number, balance: number } }
+```
+
 ### Request Flow
 
 ```
-HTTP Request → CORS → JSON Parser → /api/v1 Router → Handler → Service → Database
-                                                                    ↓
+HTTP Request → CORS → JSON Parser → /api/v1 Router → Handler → Store
+                                                                   ↓
 HTTP Response ← Error Handler ← ← ← Response Helper ← ← ← ← ← ← Result
 ```
 
@@ -86,7 +119,7 @@ HTTP Response ← Error Handler ← ← ← Response Helper ← ← ← ← ← 
 
 **Route Layer** (`src/routes/`)
 - Defines HTTP endpoints and methods
-- Minimal logic: parse request, call service, use response helper
+- Minimal logic: validate request, call store, use response helper
 - Exports Express `Router` instances
 - All errors bubble up to error handler
 
@@ -95,15 +128,16 @@ HTTP Response ← Error Handler ← ← ← Response Helper ← ← ← ← ← 
 - Applied globally in `app.ts`
 - Error handler converts `AppError` to standardized JSON
 
-**Service Layer** (`src/services/`)
-- Business logic and data operations
-- Uses Drizzle ORM to interact with database
-- Returns typed data or throws `AppError`
+**Model Layer** (`src/models/`)
+- Domain models and validation schemas
+- Uses Zod for runtime validation
+- Exports TypeScript types inferred from schemas
 
-**Database Layer** (`src/db/`)
-- Drizzle schema definitions
-- Database connection
-- Migrations
+**Store Layer** (`src/stores/`)
+- In-memory data persistence
+- Encapsulated, testable, and replaceable
+- Simple CRUD operations
+- Returns typed data or throws `AppError`
 
 **Error Layer** (`src/lib/errors.ts`)
 - `AppError` class with code, message, statusCode, details
@@ -217,9 +251,7 @@ Route Handler
     ↓
 Zod Validation (throws AppError if invalid)
     ↓
-Service Layer (business logic)
-    ↓
-Drizzle ORM (database query)
+Store Layer (in-memory operations)
     ↓
 Response Helper (success/created/noContent)
     ↓

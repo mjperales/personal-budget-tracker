@@ -1,11 +1,36 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { Transaction, CreateTransactionInput } from '../models/transaction.js';
 
+export interface TransactionFilters {
+  type?: 'income' | 'expense';
+  category?: string;
+  search?: string;
+}
+
 class TransactionStore {
   private transactions: Transaction[] = [];
 
-  getAll(): Transaction[] {
-    return [...this.transactions];
+  getAll(filters?: TransactionFilters): Transaction[] {
+    let results = [...this.transactions];
+
+    if (filters?.type) {
+      results = results.filter((t) => t.type === filters.type);
+    }
+
+    if (filters?.category) {
+      results = results.filter((t) => 
+        t.category.toLowerCase() === filters.category!.toLowerCase()
+      );
+    }
+
+    if (filters?.search) {
+      const searchLower = filters.search.toLowerCase();
+      results = results.filter((t) => 
+        t.description.toLowerCase().includes(searchLower)
+      );
+    }
+
+    return results;
   }
 
   create(input: CreateTransactionInput): Transaction {
