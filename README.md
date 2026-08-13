@@ -10,6 +10,40 @@ A full-stack personal budget tracking application built with modern web technolo
 - **Testing**: Vitest + Supertest + React Testing Library + Playwright
 - **Deployment**: Docker + Docker Compose
 
+## Features
+
+### Core Functionality
+
+- **Transaction Management**: Add, delete, and track income and expense transactions
+- **Financial Summary**: Real-time overview of income, expenses, and balance
+- **Transaction History**: Browse, filter, and search through all transactions
+- **Smart Filtering**: Filter by transaction type and category, search by description
+
+### Spending Insights (Meaningful Improvement)
+
+The application includes a **Spending Insights** feature that goes beyond the core specification by helping users understand where their money is going:
+
+- **Expense Aggregation**: Automatically groups and sums expenses by category
+- **Top Category Identification**: Highlights the highest spending category with amount and percentage
+- **Visual Breakdown**: Displays all spending categories with proportional bars showing relative spending
+- **Accessible Design**: Information is conveyed through text and structure, not just visuals
+
+**Why This Feature?**
+
+The core application makes it easy to record and find transactions. Spending Insights adds value by helping users understand their spending patterns. I chose category-based spending analysis because:
+
+1. It provides useful information even with a small transaction history
+2. It keeps the feature appropriately scoped for a take-home assignment
+3. It focuses on the most common question users have: "Where is my money going?"
+
+**Technical Approach**:
+
+- Financial aggregation happens on the API (`GET /api/v1/insights/spending-by-category`)
+- Frontend focuses on presentation and accessibility
+- Insights use the existing transaction store (no new persistence layer)
+- Visualization built with HTML/CSS (no charting library dependency)
+- Insights intentionally represent all transactions, not just filtered results
+
 ## Architecture Decisions
 
 ### Persistence

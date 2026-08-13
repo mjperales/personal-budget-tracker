@@ -21,6 +21,11 @@ describe('App', () => {
     });
     
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
+    vi.mocked(api.fetchSpendingInsights).mockResolvedValue({
+      totalExpenses: 0,
+      topCategory: null,
+      categories: [],
+    });
 
     render(<App />);
 

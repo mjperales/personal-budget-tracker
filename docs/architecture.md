@@ -99,6 +99,24 @@ DELETE /api/v1/transactions/:id
 Response: 204 No Content
 ```
 
+**Spending Insights**
+```
+GET /api/v1/insights/spending-by-category
+Response: {
+  data: {
+    totalExpenses: number,
+    topCategory: { category, amount, percentage } | null,
+    categories: [{ category, amount, percentage }]
+  }
+}
+```
+
+Analyzes expense transactions only. Returns aggregated spending by category with:
+- Total expenses across all categories
+- Top spending category (highest amount)
+- Complete breakdown sorted by amount (highest to lowest)
+- Percentages rounded to 1 decimal place
+
 **Summary**
 ```
 GET /api/v1/summary
@@ -175,6 +193,9 @@ components/
   TransactionHistory.test.tsx
   SummaryPanel.tsx
   SummaryPanel.test.tsx
+  SpendingInsights.tsx
+  SpendingInsights.types.ts
+  SpendingInsights.test.tsx
   
   # Form and dialog components
   TransactionForm.tsx
@@ -228,7 +249,7 @@ lib/
 
 **Component Layers:**
 - **Pages**: Top-level views, orchestrate mutations, manage `refreshKey`
-- **Container Components**: Handle data fetching, filter state, loading/error states
+- **Container Components**: Handle data fetching, filter state, loading/error states (e.g., `TransactionHistory`, `SummaryPanel`, `SpendingInsights`)
 - **Presentation Components**: Receive props, render UI, no API calls or state
 - **Form Components**: Handle user input, validation, submission
 - **Dialog Components**: Modal interactions (confirmation, alerts)

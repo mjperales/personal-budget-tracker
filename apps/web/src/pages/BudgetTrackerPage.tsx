@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { SummaryPanel } from '../components/SummaryPanel';
+import { SpendingInsights } from '../components/SpendingInsights';
 import { TransactionHistory } from '../components/TransactionHistory';
 import { TransactionForm } from '../components/TransactionForm';
 import { DeleteTransactionDialog } from '../components/DeleteTransactionDialog';
@@ -60,14 +61,22 @@ export function BudgetTrackerPage() {
         </header>
 
         <main className="space-y-8">
-          {/* Summary and Form - Side by side on desktop, stacked on mobile */}
+          {/* Financial Summary - Full width */}
+          <section aria-labelledby="summary-heading">
+            <h2 id="summary-heading" className="sr-only">
+              Financial Summary
+            </h2>
+            <SummaryPanel refreshKey={refreshKey} />
+          </section>
+
+          {/* Spending Insights and Form - Side by side on desktop, stacked on mobile */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Financial Summary */}
-            <section aria-labelledby="summary-heading">
-              <h2 id="summary-heading" className="sr-only">
-                Financial Summary
+            {/* Spending Insights */}
+            <section aria-labelledby="spending-insights-heading">
+              <h2 id="spending-insights-heading" className="sr-only">
+                Spending Insights
               </h2>
-              <SummaryPanel refreshKey={refreshKey} />
+              <SpendingInsights refreshKey={refreshKey} />
             </section>
 
             {/* Add Transaction Form */}

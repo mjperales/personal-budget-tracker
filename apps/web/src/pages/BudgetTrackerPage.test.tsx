@@ -20,6 +20,11 @@ describe('BudgetTrackerPage', () => {
       balance: 0,
     });
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
+    vi.mocked(api.fetchSpendingInsights).mockResolvedValue({
+      totalExpenses: 0,
+      topCategory: null,
+      categories: [],
+    });
 
     render(<BudgetTrackerPage />);
 
@@ -33,6 +38,11 @@ describe('BudgetTrackerPage', () => {
       balance: 0,
     });
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
+    vi.mocked(api.fetchSpendingInsights).mockResolvedValue({
+      totalExpenses: 0,
+      topCategory: null,
+      categories: [],
+    });
 
     render(<BudgetTrackerPage />);
 
@@ -54,6 +64,11 @@ describe('BudgetTrackerPage', () => {
       balance: 0,
     });
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
+    vi.mocked(api.fetchSpendingInsights).mockResolvedValue({
+      totalExpenses: 0,
+      topCategory: null,
+      categories: [],
+    });
 
     render(<BudgetTrackerPage />);
 
@@ -74,6 +89,11 @@ describe('BudgetTrackerPage', () => {
       balance: 500,
     });
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
+    vi.mocked(api.fetchSpendingInsights).mockResolvedValue({
+      totalExpenses: 0,
+      topCategory: null,
+      categories: [],
+    });
 
     const { container } = render(<BudgetTrackerPage />);
 

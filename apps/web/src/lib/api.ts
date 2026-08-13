@@ -60,6 +60,22 @@ export async function fetchSummary(): Promise<Summary> {
   return apiClient<Summary>('/summary');
 }
 
+export interface CategorySpending {
+  category: string;
+  amount: number;
+  percentage: number;
+}
+
+export interface SpendingInsights {
+  totalExpenses: number;
+  topCategory: CategorySpending | null;
+  categories: CategorySpending[];
+}
+
+export async function fetchSpendingInsights(): Promise<SpendingInsights> {
+  return apiClient<SpendingInsights>('/insights/spending-by-category');
+}
+
 export interface Transaction {
   id: string;
   date: string;
