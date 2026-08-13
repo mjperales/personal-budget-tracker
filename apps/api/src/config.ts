@@ -3,7 +3,6 @@ import { z } from 'zod';
 const ConfigSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  DB_PATH: z.string().min(1).default('./data/budget.db'),
   CORS_ORIGIN: z.string().optional(),
 });
 
