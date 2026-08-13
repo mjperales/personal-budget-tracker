@@ -68,6 +68,7 @@ POST   /api/v1/transactions
 PUT    /api/v1/transactions/:id
 DELETE /api/v1/transactions/:id
 GET    /api/v1/summary
+GET    /api/v1/insights/spending-by-category
 GET    /api/v1/health
 ```
 
