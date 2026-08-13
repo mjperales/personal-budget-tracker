@@ -1,18 +1,16 @@
 services:
 
-  # API (Express + Drizzle + SQLite)
+  # API (Express + TypeScript)
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
     ports:
       - "${API_PORT:-3000}:3000"
-    volumes:
-      - ./data:/data
     environment:
       PORT: "3000"
-      DB_PATH: /data/budget.db
       NODE_ENV: development
+      SEED_DATA: "true"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/v1/health"]

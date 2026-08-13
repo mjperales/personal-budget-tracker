@@ -1,4 +1,4 @@
-# Budget Tracker API - Express + TypeScript + Drizzle
+# Budget Tracker API - Express + TypeScript
 # Build context: repo root (docker build -f apps/api/Dockerfile .)
 
 FROM node:22-alpine
@@ -20,10 +20,6 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY apps/api/src ./apps/api/src
 COPY apps/api/tsconfig.json ./apps/api/tsconfig.json
-COPY apps/api/drizzle.config.ts ./apps/api/drizzle.config.ts
-
-# Create data directory for SQLite
-RUN mkdir -p /data
 
 EXPOSE 3000
 
