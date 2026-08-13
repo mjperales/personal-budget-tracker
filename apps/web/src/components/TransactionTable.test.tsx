@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { TransactionTable } from './TransactionTable';
@@ -25,14 +25,16 @@ const mockTransactions: Transaction[] = [
 
 describe('TransactionTable', () => {
   it('renders table with transactions', () => {
-    render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Groceries')).toBeInTheDocument();
     expect(screen.getByText('Salary')).toBeInTheDocument();
   });
 
   it('renders all column headers', () => {
-    const { container } = render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     const headers = container.querySelectorAll('th');
     const headerTexts = Array.from(headers).map((h) => h.textContent);
@@ -46,21 +48,24 @@ describe('TransactionTable', () => {
   });
 
   it('displays formatted dates', () => {
-    render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Aug 12, 2026')).toBeInTheDocument();
     expect(screen.getByText('Aug 13, 2026')).toBeInTheDocument();
   });
 
   it('displays formatted amounts with prefix', () => {
-    const { container } = render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     expect(container.textContent).toContain('-$150.50');
     expect(container.textContent).toContain('+$5,000.00');
   });
 
   it('displays categories and types', () => {
-    render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Food')).toBeInTheDocument();
     expect(screen.getByText('Employment')).toBeInTheDocument();
@@ -70,7 +75,8 @@ describe('TransactionTable', () => {
   });
 
   it('applies correct styling for income and expense', () => {
-    const { container } = render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     const rows = container.querySelectorAll('tbody tr');
     expect(rows).toHaveLength(2);
@@ -85,14 +91,16 @@ describe('TransactionTable', () => {
   });
 
   it('renders empty table when no transactions', () => {
-    const { container } = render(<TransactionTable transactions={[]} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionTable transactions={[]} onDeleteClick={onDeleteClick} />);
 
     const tbody = container.querySelector('tbody');
     expect(tbody?.children).toHaveLength(0);
   });
 
   it('should not have accessibility violations', async () => {
-    const { container } = render(<TransactionTable transactions={mockTransactions} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionTable transactions={mockTransactions} onDeleteClick={onDeleteClick} />);
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();

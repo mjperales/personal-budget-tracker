@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { TransactionCard } from './TransactionCard';
@@ -24,52 +24,60 @@ const mockIncome: Transaction = {
 
 describe('TransactionCard', () => {
   it('renders transaction description', () => {
-    render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Groceries at Whole Foods')).toBeInTheDocument();
   });
 
   it('renders formatted date', () => {
-    render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Aug 12, 2026')).toBeInTheDocument();
   });
 
   it('renders formatted amount for expense with minus prefix', () => {
-    const { container } = render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     expect(container.textContent).toContain('-$150.50');
   });
 
   it('renders formatted amount for income with plus prefix', () => {
-    const { container } = render(<TransactionCard transaction={mockIncome} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionCard transaction={mockIncome} onDeleteClick={onDeleteClick} />);
 
     expect(container.textContent).toContain('+$5,000.00');
   });
 
   it('displays category and type', () => {
-    render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText('Food')).toBeInTheDocument();
     expect(screen.getByText('expense')).toBeInTheDocument();
   });
 
   it('applies green color for income', () => {
-    const { container } = render(<TransactionCard transaction={mockIncome} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionCard transaction={mockIncome} onDeleteClick={onDeleteClick} />);
 
     const amountElement = container.querySelector('.text-green-600');
     expect(amountElement).toBeInTheDocument();
   });
 
   it('applies red color for expense', () => {
-    const { container } = render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     const amountElement = container.querySelector('.text-red-600');
     expect(amountElement).toBeInTheDocument();
   });
 
   it('should not have accessibility violations', async () => {
-    const { container } = render(<TransactionCard transaction={mockExpense} />);
+    const onDeleteClick = vi.fn();
+    const { container } = render(<TransactionCard transaction={mockExpense} onDeleteClick={onDeleteClick} />);
 
     const results = await axe(container);
     expect(results).toHaveNoViolations();

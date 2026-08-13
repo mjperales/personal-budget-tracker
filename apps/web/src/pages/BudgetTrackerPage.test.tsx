@@ -5,6 +5,12 @@ import { BudgetTrackerPage } from './BudgetTrackerPage';
 import * as api from '../lib/api';
 
 vi.mock('../lib/api');
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
 
 describe('BudgetTrackerPage', () => {
   it('renders the page heading', () => {
@@ -20,7 +26,7 @@ describe('BudgetTrackerPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: /personal budget tracker/i })).toBeInTheDocument();
   });
 
-  it('renders the main sections', () => {
+  it('renders the main sections', async () => {
     vi.mocked(api.fetchSummary).mockResolvedValue({
       income: 0,
       expenses: 0,
@@ -30,8 +36,15 @@ describe('BudgetTrackerPage', () => {
 
     render(<BudgetTrackerPage />);
 
-    expect(screen.getByRole('heading', { name: /add transaction/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /transaction history/i })).toBeInTheDocument();
+    // Wait for loading to complete
+    await screen.findByLabelText(/description/i);
+
+    // Check that headings exist (may be multiple due to sr-only and visible)
+    const addTransactionHeadings = screen.getAllByRole('heading', { name: /add transaction/i });
+    expect(addTransactionHeadings.length).toBeGreaterThan(0);
+    
+    const transactionHistoryHeadings = screen.getAllByRole('heading', { name: /transaction history/i });
+    expect(transactionHistoryHeadings.length).toBeGreaterThan(0);
   });
 
   it('has proper heading hierarchy', () => {

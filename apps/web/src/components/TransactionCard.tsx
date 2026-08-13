@@ -1,8 +1,9 @@
+import { Trash2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../lib/format';
 import { Card } from './ui/Card';
 import type { TransactionCardProps } from './TransactionCard.types';
 
-export function TransactionCard({ transaction }: TransactionCardProps) {
+export function TransactionCard({ transaction, onDeleteClick }: TransactionCardProps) {
   const isIncome = transaction.type === 'income';
   const amountColor = isIncome ? 'text-green-600' : 'text-red-600';
   const amountPrefix = isIncome ? '+' : '-';
@@ -32,10 +33,14 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
             {transaction.type}
           </span>
         </div>
-        <div className="text-muted-foreground">
-          {/* Delete button placeholder */}
-          Actions
-        </div>
+        <button
+          onClick={() => onDeleteClick(transaction)}
+          className="inline-flex items-center gap-1 text-destructive hover:text-destructive/80 focus:outline-none focus:ring-2 focus:ring-ring rounded px-1"
+          aria-label={`Delete ${transaction.description} transaction`}
+        >
+          <Trash2 className="h-3 w-3" aria-hidden="true" />
+          <span>Delete</span>
+        </button>
       </div>
     </Card>
   );

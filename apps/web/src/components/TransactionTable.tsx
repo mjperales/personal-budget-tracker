@@ -1,7 +1,8 @@
+import { Trash2 } from 'lucide-react';
 import { formatCurrency, formatDate } from '../lib/format';
 import type { TransactionTableProps } from './TransactionTable.types';
 
-export function TransactionTable({ transactions }: TransactionTableProps) {
+export function TransactionTable({ transactions, onDeleteClick }: TransactionTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -54,8 +55,14 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
                   {amountPrefix}{formatCurrency(transaction.amount)}
                 </td>
                 <td className="py-3 px-4 text-sm text-right">
-                  {/* Delete button placeholder */}
-                  <span className="text-muted-foreground text-xs">Actions</span>
+                  <button
+                    onClick={() => onDeleteClick(transaction)}
+                    className="inline-flex items-center gap-1 text-destructive hover:text-destructive/80 focus:outline-none focus:ring-2 focus:ring-ring rounded px-2 py-1"
+                    aria-label={`Delete ${transaction.description} transaction`}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    <span className="text-xs">Delete</span>
+                  </button>
                 </td>
               </tr>
             );

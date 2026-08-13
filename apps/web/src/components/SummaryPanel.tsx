@@ -6,7 +6,11 @@ import { Card } from './ui/Card';
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
-export function SummaryPanel() {
+export interface SummaryPanelProps {
+  refreshKey?: number;
+}
+
+export function SummaryPanel({ refreshKey = 0 }: SummaryPanelProps) {
   const [state, setState] = useState<LoadingState>('loading');
   const [summary, setSummary] = useState<Summary | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +28,7 @@ export function SummaryPanel() {
         setError(err instanceof Error ? err.message : 'Failed to load summary');
         setState('error');
       });
-  }, []);
+  }, [refreshKey]);
 
   if (state === 'loading') {
     return (

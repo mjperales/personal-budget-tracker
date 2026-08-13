@@ -2,10 +2,10 @@ import type { Transaction } from '../lib/api';
 
 export interface TransactionCardProps {
   transaction: Transaction;
-  onDelete?: (id: string) => void;
+  onDeleteClick: (transaction: Transaction) => void;
 }
 
 export interface TransactionCardListProps {
   transactions: Transaction[];
-  onDelete?: (id: string) => void;
+  onDeleteClick: (transaction: Transaction) => void;
 }

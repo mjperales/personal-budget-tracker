@@ -3,9 +3,9 @@ import { fetchTransactions, type Transaction } from '../lib/api';
 import { Card } from './ui/Card';
 import { TransactionTable } from './TransactionTable';
 import { TransactionCardList } from './TransactionCardList';
-import type { LoadingState } from './TransactionHistory.types';
+import type { LoadingState, TransactionHistoryProps } from './TransactionHistory.types';
 
-export function TransactionHistory() {
+export function TransactionHistory({ refreshKey = 0, onDeleteClick }: TransactionHistoryProps) {
   const [state, setState] = useState<LoadingState>('loading');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export function TransactionHistory() {
         setError(err instanceof Error ? err.message : 'Failed to load transactions');
         setState('error');
       });
-  }, []);
+  }, [refreshKey]);
 
   if (state === 'loading') {
     return (
@@ -66,12 +66,12 @@ export function TransactionHistory() {
       
       {/* Desktop table view */}
       <div className="hidden md:block">
-        <TransactionTable transactions={transactions} />
+        <TransactionTable transactions={transactions} onDeleteClick={onDeleteClick} />
       </div>
 
       {/* Mobile card view */}
       <div className="md:hidden">
-        <TransactionCardList transactions={transactions} />
+        <TransactionCardList transactions={transactions} onDeleteClick={onDeleteClick} />
       </div>
     </Card>
   );

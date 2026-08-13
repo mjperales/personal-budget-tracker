@@ -12,17 +12,19 @@ describe('TransactionHistory', () => {
   });
 
   it('shows loading state initially', () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockImplementation(
       () => new Promise(() => {}) // Never resolves
     );
 
-    render(<TransactionHistory />);
+    render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     expect(screen.getByText(/loading transactions/i)).toBeInTheDocument();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('displays transactions when loaded', async () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockResolvedValue([
       {
         id: '1',
@@ -42,7 +44,7 @@ describe('TransactionHistory', () => {
       },
     ]);
 
-    render(<TransactionHistory />);
+    render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     await waitFor(() => {
       expect(screen.getAllByText('Groceries').length).toBeGreaterThan(0);
@@ -52,9 +54,10 @@ describe('TransactionHistory', () => {
   });
 
   it('shows empty state when no transactions', async () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
-    render(<TransactionHistory />);
+    render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     await waitFor(() => {
       expect(screen.getByText(/no transactions yet/i)).toBeInTheDocument();
@@ -64,9 +67,10 @@ describe('TransactionHistory', () => {
   });
 
   it('shows error state when API fails', async () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockRejectedValue(new Error('Network error'));
 
-    render(<TransactionHistory />);
+    render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -77,6 +81,7 @@ describe('TransactionHistory', () => {
   });
 
   it('formats amounts with correct prefix and color', async () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockResolvedValue([
       {
         id: '1',
@@ -96,7 +101,7 @@ describe('TransactionHistory', () => {
       },
     ]);
 
-    const { container } = render(<TransactionHistory />);
+    const { container } = render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     await waitFor(() => {
       expect(screen.getAllByText('Expense Transaction').length).toBeGreaterThan(0);
@@ -108,6 +113,7 @@ describe('TransactionHistory', () => {
   });
 
   it('should not have accessibility violations', async () => {
+    const onDeleteClick = vi.fn();
     vi.mocked(api.fetchTransactions).mockResolvedValue([
       {
         id: '1',
@@ -119,7 +125,7 @@ describe('TransactionHistory', () => {
       },
     ]);
 
-    const { container } = render(<TransactionHistory />);
+    const { container } = render(<TransactionHistory onDeleteClick={onDeleteClick} />);
 
     await waitFor(() => {
       expect(screen.getAllByText('Test Transaction').length).toBeGreaterThan(0);

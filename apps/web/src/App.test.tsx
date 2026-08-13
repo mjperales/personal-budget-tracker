@@ -4,6 +4,13 @@ import App from './App';
 import * as api from './lib/api';
 
 vi.mock('./lib/api');
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+  Toaster: () => null,
+}));
 
 describe('App', () => {
   it('renders the budget tracker page', () => {

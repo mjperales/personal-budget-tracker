@@ -1,8 +1,52 @@
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { SummaryPanel } from '../components/SummaryPanel';
 import { TransactionHistory } from '../components/TransactionHistory';
-import { Card } from '../components/ui/Card';
+import { TransactionForm } from '../components/TransactionForm';
+import { DeleteTransactionDialog } from '../components/DeleteTransactionDialog';
+import { deleteTransaction, type Transaction } from '../lib/api';
 
 export function BudgetTrackerPage() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleTransactionAdded = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  const handleDeleteClick = (transaction: Transaction) => {
+    setTransactionToDelete(transaction);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!transactionToDelete) return;
+
+    setIsDeleting(true);
+
+    try {
+      await deleteTransaction(transactionToDelete.id);
+      toast.success(`"${transactionToDelete.description}" was deleted successfully.`);
+      setDeleteDialogOpen(false);
+      setTransactionToDelete(null);
+      setRefreshKey((prev) => prev + 1);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete transaction';
+      toast.error(message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    if (!isDeleting) {
+      setDeleteDialogOpen(false);
+      setTransactionToDelete(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -16,34 +60,44 @@ export function BudgetTrackerPage() {
         </header>
 
         <main className="space-y-8">
-          {/* Financial Summary */}
-          <section aria-labelledby="summary-heading">
-            <h2 id="summary-heading" className="sr-only">
-              Financial Summary
-            </h2>
-            <SummaryPanel />
-          </section>
+          {/* Summary and Form - Side by side on desktop, stacked on mobile */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Financial Summary */}
+            <section aria-labelledby="summary-heading">
+              <h2 id="summary-heading" className="sr-only">
+                Financial Summary
+              </h2>
+              <SummaryPanel refreshKey={refreshKey} />
+            </section>
 
-          {/* Add Transaction - Placeholder */}
-          <section aria-labelledby="add-transaction-heading">
-            <Card>
-              <h2 id="add-transaction-heading" className="text-xl font-semibold mb-4">
+            {/* Add Transaction Form */}
+            <section aria-labelledby="add-transaction-heading">
+              <h2 id="add-transaction-heading" className="sr-only">
                 Add Transaction
               </h2>
-              <p className="text-muted-foreground text-sm">
-                Transaction form will be implemented in the next phase.
-              </p>
-            </Card>
-          </section>
+              <TransactionForm onSuccess={handleTransactionAdded} />
+            </section>
+          </div>
 
           {/* Transaction History */}
           <section aria-labelledby="transactions-heading">
             <h2 id="transactions-heading" className="sr-only">
               Transaction History
             </h2>
-            <TransactionHistory />
+            <TransactionHistory 
+              refreshKey={refreshKey} 
+              onDeleteClick={handleDeleteClick}
+            />
           </section>
         </main>
+
+        <DeleteTransactionDialog
+          transaction={transactionToDelete}
+          open={deleteDialogOpen}
+          onOpenChange={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          isDeleting={isDeleting}
+        />
       </div>
     </div>
   );

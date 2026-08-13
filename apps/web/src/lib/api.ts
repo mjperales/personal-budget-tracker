@@ -31,7 +31,18 @@ export async function apiClient<T = unknown>(
     throw new Error(errorData.error?.message || 'API request failed');
   }
 
-  const successData = await response.json() as ApiSuccessResponse<T>;
+  // Handle empty responses (e.g., DELETE with 204 No Content)
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    return undefined as T;
+  }
+
+  const text = await response.text();
+  if (!text) {
+    return undefined as T;
+  }
+
+  const successData = JSON.parse(text) as ApiSuccessResponse<T>;
   return successData.data;
 }
 
@@ -83,4 +94,19 @@ export async function fetchTransactions(filters?: TransactionFilters): Promise<T
   const endpoint = query ? `/transactions?${query}` : '/transactions';
   
   return apiClient<Transaction[]>(endpoint);
+}
+
+export type CreateTransactionInput = Omit<Transaction, 'id'>;
+
+export async function createTransaction(input: CreateTransactionInput): Promise<Transaction> {
+  return apiClient<Transaction>('/transactions', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteTransaction(id: string): Promise<void> {
+  await apiClient<void>(`/transactions/${id}`, {
+    method: 'DELETE',
+  });
 }
