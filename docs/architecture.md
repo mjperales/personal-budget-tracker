@@ -163,8 +163,43 @@ No HTTP server starts during tests → fast, isolated tests.
 
 ### Component Structure
 
-- **Pages/Routes**: Top-level views mapped to URL routes
-- **Components**: Reusable UI building blocks
+**File Organization:**
+```
+components/
+  TransactionHistory.tsx        # Container component
+  TransactionHistory.types.ts   # Component-specific types
+  TransactionHistory.test.tsx   # Component tests
+  TransactionTable.tsx          # Presentation component
+  TransactionTable.types.ts     # Table types
+  TransactionTable.test.tsx     # Table tests
+  ui/                           # Reusable primitives
+    Card.tsx
+    Card.types.ts
+    Card.test.tsx
+
+pages/
+  BudgetTrackerPage.tsx         # Page component
+  BudgetTrackerPage.test.tsx    # Page tests
+
+lib/
+  api.ts                        # API client and types
+  format.ts                     # Formatting utilities
+  format.test.ts                # Utility tests
+  utils.ts                      # General utilities
+```
+
+**Component Patterns:**
+- **Flat structure**: No folders per component
+- **Separate types**: Use `.types.ts` for component-specific types
+- **Container/Presentation**: Separate data fetching from rendering
+- **Responsive design**: Use Tailwind breakpoints (`md:`, `lg:`) for responsive layouts
+- **Shared logic**: Extract formatting and business logic to `lib/`
+
+**Component Layers:**
+- **Pages**: Top-level views mapped to URL routes
+- **Container Components**: Handle data fetching and state management
+- **Presentation Components**: Receive props, render UI, no API calls
+- **UI Primitives** (`ui/`): Reusable, generic components (Button, Card, etc.)
 - **lib/**: Utilities and API client abstraction
 
 ### API Communication
@@ -315,8 +350,6 @@ Built in from the start:
 │  │   │  (runs TS directly)      │  │    │
 │  │   └──────────────────────────┘  │    │
 │  │                                 │    │
-│  │   Volume: ./data → /data        │    │
-│  │   (SQLite database)             │    │
 │  └─────────────────────────────────┘    │
 └─────────────────────────────────────────┘
 ```
@@ -325,7 +358,7 @@ Built in from the start:
 - Web is multi-stage: build → serve
 - API runs TypeScript directly via `tsx`
 - nginx proxies `/api/*` to API service
-- SQLite data persists in host `./data/` directory
+- API uses in-memory storage (data resets on restart)
 - Compose DNS resolves `api` hostname
 
 ## Key Design Decisions
@@ -336,11 +369,12 @@ Built in from the start:
 - Proper hoisting avoids duplication
 - Native monorepo support
 
-### Why SQLite + Drizzle?
+### Why in-memory storage?
 
-- Local-first, no external database required
-- Drizzle provides type-safe ORM with migrations
-- Easy to back up (single file)
+- Simplifies implementation for take-home assignment
+- Focuses evaluation on API design and business logic
+- Easy to replace with real database later
+- Fast and testable
 
 ### Why Vite?
 

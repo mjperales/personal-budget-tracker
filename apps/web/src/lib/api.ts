@@ -48,3 +48,39 @@ export interface Summary {
 export async function fetchSummary(): Promise<Summary> {
   return apiClient<Summary>('/summary');
 }
+
+export interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  type: 'income' | 'expense';
+  category: string;
+}
+
+export interface TransactionFilters {
+  type?: 'income' | 'expense';
+  category?: string;
+  search?: string;
+}
+
+export async function fetchTransactions(filters?: TransactionFilters): Promise<Transaction[]> {
+  const params = new URLSearchParams();
+  
+  if (filters?.type) {
+    params.append('type', filters.type);
+  }
+  
+  if (filters?.category) {
+    params.append('category', filters.category);
+  }
+  
+  if (filters?.search) {
+    params.append('search', filters.search);
+  }
+  
+  const query = params.toString();
+  const endpoint = query ? `/transactions?${query}` : '/transactions';
+  
+  return apiClient<Transaction[]>(endpoint);
+}

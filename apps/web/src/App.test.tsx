@@ -12,9 +12,11 @@ describe('App', () => {
       expenses: 0,
       balance: 0,
     });
+    
+    vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
     render(<App />);
-    
+
     expect(screen.getByRole('heading', { level: 1, name: /personal budget tracker/i })).toBeInTheDocument();
   });
 });

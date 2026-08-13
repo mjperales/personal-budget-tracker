@@ -21,14 +21,32 @@ middleware/
 
 ```
 components/
-  ComponentName/          # PascalCase folder
-    ComponentName.tsx     # Component implementation
-    ComponentName.test.tsx # Colocated test
-    index.ts              # Re-export
+  ComponentName.tsx        # Component implementation
+  ComponentName.types.ts   # Component-specific types
+  ComponentName.test.tsx   # Colocated test
+  
+  ui/                      # Reusable UI primitives
+    Button.tsx
+    Button.types.ts
+    Button.test.tsx
+    Card.tsx
+    Card.types.ts
+    Card.test.tsx
+
+pages/
+  PageName.tsx             # Page component
+  PageName.test.tsx        # Page test
 
 lib/
-  kebab-case.ts           # e.g., api.ts, utils.ts
+  kebab-case.ts           # e.g., api.ts, utils.ts, format.ts
+  kebab-case.test.ts      # Colocated test
 ```
+
+**Component file conventions:**
+- Flat structure (no folders per component)
+- Separate `.types.ts` file for component-specific types
+- Colocated `.test.tsx` file for tests
+- Use `ui/` subfolder for reusable primitives
 
 ## TypeScript Patterns
 
@@ -238,13 +256,10 @@ throw new AppError('INSUFFICIENT_FUNDS', 'Account balance too low', 400);
 
 ### Component Structure
 
+**Component file (`TransactionList.tsx`):**
 ```typescript
 import { useState } from 'react';
-
-interface TransactionListProps {
-  transactions: Transaction[];
-  onSelect?: (id: string) => void;
-}
+import type { TransactionListProps } from './TransactionList.types';
 
 export function TransactionList({ transactions, onSelect }: TransactionListProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -268,12 +283,29 @@ export function TransactionList({ transactions, onSelect }: TransactionListProps
 }
 ```
 
+**Types file (`TransactionList.types.ts`):**
+```typescript
+import type { Transaction } from '@/lib/api';
+
+export interface TransactionListProps {
+  transactions: Transaction[];
+  onSelect?: (id: string) => void;
+}
+```
+
 **Component conventions:**
 - Use function components
-- Define Props interface above component
+- Store component-specific types in separate `.types.ts` file
+- Import types using `type` keyword
 - Destructure props in parameter
 - Use optional chaining for optional callbacks
 - Export component directly (named export)
+
+**When to use `.types.ts` files:**
+- Component props interfaces
+- Component-specific type aliases
+- Enums or constants used only by that component
+- Helps keep component files focused on implementation
 
 ### API Calls
 

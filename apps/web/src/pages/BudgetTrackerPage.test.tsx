@@ -13,6 +13,7 @@ describe('BudgetTrackerPage', () => {
       expenses: 0,
       balance: 0,
     });
+    vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
     render(<BudgetTrackerPage />);
 
@@ -25,11 +26,12 @@ describe('BudgetTrackerPage', () => {
       expenses: 0,
       balance: 0,
     });
+    vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
     render(<BudgetTrackerPage />);
 
     expect(screen.getByRole('heading', { name: /add transaction/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^transactions$/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /transaction history/i })).toBeInTheDocument();
   });
 
   it('has proper heading hierarchy', () => {
@@ -38,6 +40,7 @@ describe('BudgetTrackerPage', () => {
       expenses: 0,
       balance: 0,
     });
+    vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
     render(<BudgetTrackerPage />);
 
@@ -57,6 +60,7 @@ describe('BudgetTrackerPage', () => {
       expenses: 500,
       balance: 500,
     });
+    vi.mocked(api.fetchTransactions).mockResolvedValue([]);
 
     const { container } = render(<BudgetTrackerPage />);
 

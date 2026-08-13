@@ -1,4 +1,5 @@
 import { SummaryPanel } from '../components/SummaryPanel';
+import { TransactionHistory } from '../components/TransactionHistory';
 import { Card } from '../components/ui/Card';
 
 export function BudgetTrackerPage() {
@@ -35,16 +36,12 @@ export function BudgetTrackerPage() {
             </Card>
           </section>
 
-          {/* Transactions - Placeholder */}
+          {/* Transaction History */}
           <section aria-labelledby="transactions-heading">
-            <Card>
-              <h2 id="transactions-heading" className="text-xl font-semibold mb-4">
-                Transactions
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Transaction list and filters will be implemented in the next phase.
-              </p>
-            </Card>
+            <h2 id="transactions-heading" className="sr-only">
+              Transaction History
+            </h2>
+            <TransactionHistory />
           </section>
         </main>
       </div>
