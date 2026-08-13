@@ -87,6 +87,23 @@ pnpm lint
 pnpm build
 ```
 
+### Mock Data
+
+The API includes sample transaction data for testing and demonstration. To enable mock data seeding:
+
+```bash
+# In apps/api/.env
+SEED_DATA=true
+```
+
+Then start the server:
+
+```bash
+pnpm dev
+```
+
+The API will automatically load 20 sample transactions on startup. See `apps/api/src/data/README.md` for details.
+
 ### Docker
 
 ```bash

@@ -1,8 +1,13 @@
 import 'dotenv/config';
 import { createApp } from './app.js';
 import { config } from './config.js';
+import { seedMockData } from './data/seed.js';
 
 const app = createApp(config);
+
+if (config.SEED_DATA) {
+  seedMockData();
+}
 
 const server = app.listen(config.PORT, () => {
   console.log(`🚀 API server started on port ${config.PORT} (${config.NODE_ENV})`);
