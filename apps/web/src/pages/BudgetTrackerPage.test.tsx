@@ -1,0 +1,69 @@
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { axe } from 'vitest-axe';
+import { BudgetTrackerPage } from './BudgetTrackerPage';
+import * as api from '../lib/api';
+
+vi.mock('../lib/api');
+
+describe('BudgetTrackerPage', () => {
+  it('renders the page heading', () => {
+    vi.mocked(api.fetchSummary).mockResolvedValue({
+      income: 0,
+      expenses: 0,
+      balance: 0,
+    });
+
+    render(<BudgetTrackerPage />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /personal budget tracker/i })).toBeInTheDocument();
+  });
+
+  it('renders the main sections', () => {
+    vi.mocked(api.fetchSummary).mockResolvedValue({
+      income: 0,
+      expenses: 0,
+      balance: 0,
+    });
+
+    render(<BudgetTrackerPage />);
+
+    expect(screen.getByRole('heading', { name: /add transaction/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^transactions$/i })).toBeInTheDocument();
+  });
+
+  it('has proper heading hierarchy', () => {
+    vi.mocked(api.fetchSummary).mockResolvedValue({
+      income: 0,
+      expenses: 0,
+      balance: 0,
+    });
+
+    render(<BudgetTrackerPage />);
+
+    const headings = screen.getAllByRole('heading');
+    
+    // h1 - page title
+    expect(headings[0].tagName).toBe('H1');
+    
+    // h2s - section headings
+    const h2s = headings.filter((h) => h.tagName === 'H2');
+    expect(h2s.length).toBeGreaterThan(0);
+  });
+
+  it('should not have accessibility violations', async () => {
+    vi.mocked(api.fetchSummary).mockResolvedValue({
+      income: 1000,
+      expenses: 500,
+      balance: 500,
+    });
+
+    const { container } = render(<BudgetTrackerPage />);
+
+    // Wait for async content to load
+    await screen.findByText(/total income/i);
+
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});

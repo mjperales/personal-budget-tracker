@@ -38,3 +38,13 @@ export async function apiClient<T = unknown>(
 export async function checkApiHealth(): Promise<{ status: string }> {
   return apiClient('/health');
 }
+
+export interface Summary {
+  income: number;
+  expenses: number;
+  balance: number;
+}
+
+export async function fetchSummary(): Promise<Summary> {
+  return apiClient<Summary>('/summary');
+}
