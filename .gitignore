@@ -16,6 +16,7 @@ build/
 
 # Database
 data/
+!apps/api/src/data/
 *.db
 *.db-shm
 *.db-wal

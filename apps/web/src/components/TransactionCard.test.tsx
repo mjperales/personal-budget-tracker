@@ -63,7 +63,7 @@ describe('TransactionCard', () => {
     const onDeleteClick = vi.fn();
     const { container } = render(<TransactionCard transaction={mockIncome} onDeleteClick={onDeleteClick} />);
 
-    const amountElement = container.querySelector('.text-green-600');
+    const amountElement = container.querySelector('.text-green-700');
     expect(amountElement).toBeInTheDocument();
   });
 

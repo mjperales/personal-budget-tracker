@@ -1,0 +1,142 @@
+[
+  {
+    "date": "2026-08-01",
+    "description": "Monthly Salary",
+    "amount": 5000,
+    "type": "income",
+    "category": "Employment"
+  },
+  {
+    "date": "2026-08-01",
+    "description": "Rent Payment",
+    "amount": 1500,
+    "type": "expense",
+    "category": "Housing"
+  },
+  {
+    "date": "2026-08-02",
+    "description": "Electric Bill",
+    "amount": 120,
+    "type": "expense",
+    "category": "Utilities"
+  },
+  {
+    "date": "2026-08-02",
+    "description": "Internet Service",
+    "amount": 80,
+    "type": "expense",
+    "category": "Utilities"
+  },
+  {
+    "date": "2026-08-03",
+    "description": "Whole Foods Groceries",
+    "amount": 156.43,
+    "type": "expense",
+    "category": "Food"
+  },
+  {
+    "date": "2026-08-04",
+    "description": "Gas Station",
+    "amount": 45.20,
+    "type": "expense",
+    "category": "Transportation"
+  },
+  {
+    "date": "2026-08-05",
+    "description": "Freelance Web Design Project",
+    "amount": 1200,
+    "type": "income",
+    "category": "Side Work"
+  },
+  {
+    "date": "2026-08-05",
+    "description": "Restaurant Dinner",
+    "amount": 68.50,
+    "type": "expense",
+    "category": "Food"
+  },
+  {
+    "date": "2026-08-06",
+    "description": "Gym Membership",
+    "amount": 55,
+    "type": "expense",
+    "category": "Health"
+  },
+  {
+    "date": "2026-08-07",
+    "description": "Grocery Store",
+    "amount": 89.67,
+    "type": "expense",
+    "category": "Food"
+  },
+  {
+    "date": "2026-08-08",
+    "description": "Movie Tickets",
+    "amount": 32,
+    "type": "expense",
+    "category": "Entertainment"
+  },
+  {
+    "date": "2026-08-08",
+    "description": "Coffee Shop",
+    "amount": 12.50,
+    "type": "expense",
+    "category": "Food"
+  },
+  {
+    "date": "2026-08-09",
+    "description": "Online Course Subscription",
+    "amount": 39.99,
+    "type": "expense",
+    "category": "Education"
+  },
+  {
+    "date": "2026-08-10",
+    "description": "Car Insurance",
+    "amount": 165,
+    "type": "expense",
+    "category": "Insurance"
+  },
+  {
+    "date": "2026-08-10",
+    "description": "Gas Station",
+    "amount": 52.30,
+    "type": "expense",
+    "category": "Transportation"
+  },
+  {
+    "date": "2026-08-11",
+    "description": "Pharmacy - Prescriptions",
+    "amount": 45.80,
+    "type": "expense",
+    "category": "Health"
+  },
+  {
+    "date": "2026-08-11",
+    "description": "Target Shopping",
+    "amount": 127.34,
+    "type": "expense",
+    "category": "Shopping"
+  },
+  {
+    "date": "2026-08-12",
+    "description": "Consulting Bonus",
+    "amount": 800,
+    "type": "income",
+    "category": "Side Work"
+  },
+  {
+    "date": "2026-08-12",
+    "description": "Lunch with Clients",
+    "amount": 94.20,
+    "type": "expense",
+    "category": "Food"
+  },
+  {
+    "date": "2026-08-13",
+    "description": "Streaming Services",
+    "amount": 28.97,
+    "type": "expense",
+    "category": "Entertainment"
+  }
+]

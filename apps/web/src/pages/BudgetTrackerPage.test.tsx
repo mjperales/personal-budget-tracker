@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { BudgetTrackerPage } from './BudgetTrackerPage';
 import * as api from '../lib/api';
@@ -13,7 +13,7 @@ vi.mock('sonner', () => ({
 }));
 
 describe('BudgetTrackerPage', () => {
-  it('renders the page heading', () => {
+  it('renders the page heading', async () => {
     vi.mocked(api.fetchSummary).mockResolvedValue({
       income: 0,
       expenses: 0,
@@ -29,6 +29,13 @@ describe('BudgetTrackerPage', () => {
     render(<BudgetTrackerPage />);
 
     expect(screen.getByRole('heading', { level: 1, name: /personal budget tracker/i })).toBeInTheDocument();
+    
+    // Wait for components to finish loading
+    await waitFor(() => {
+      expect(api.fetchSummary).toHaveBeenCalled();
+      expect(api.fetchTransactions).toHaveBeenCalled();
+      expect(api.fetchSpendingInsights).toHaveBeenCalled();
+    });
   });
 
   it('renders the main sections', async () => {
@@ -57,7 +64,7 @@ describe('BudgetTrackerPage', () => {
     expect(transactionHistoryHeadings.length).toBeGreaterThan(0);
   });
 
-  it('has proper heading hierarchy', () => {
+  it('has proper heading hierarchy', async () => {
     vi.mocked(api.fetchSummary).mockResolvedValue({
       income: 0,
       expenses: 0,
@@ -80,6 +87,13 @@ describe('BudgetTrackerPage', () => {
     // h2s - section headings
     const h2s = headings.filter((h) => h.tagName === 'H2');
     expect(h2s.length).toBeGreaterThan(0);
+    
+    // Wait for components to finish loading
+    await waitFor(() => {
+      expect(api.fetchSummary).toHaveBeenCalled();
+      expect(api.fetchTransactions).toHaveBeenCalled();
+      expect(api.fetchSpendingInsights).toHaveBeenCalled();
+    });
   });
 
   it('should not have accessibility violations', async () => {

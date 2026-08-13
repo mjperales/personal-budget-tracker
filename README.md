@@ -7,7 +7,7 @@ A full-stack personal budget tracking application built with modern web technolo
 - **Monorepo**: pnpm workspaces
 - **API**: Express + TypeScript
 - **Web**: React + Vite + Tailwind CSS v4
-- **Testing**: Vitest + Supertest + React Testing Library + Playwright
+- **Testing**: Vitest + Supertest + React Testing Library
 - **Deployment**: Docker + Docker Compose
 
 ## Features
@@ -84,8 +84,6 @@ personal-budget-tracker/
 ├── apps/
 │   ├── api/          # Express REST API
 │   └── web/          # React SPA
-├── packages/
-│   └── shared/       # Shared types and schemas
 └── ...
 ```
 

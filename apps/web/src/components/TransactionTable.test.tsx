@@ -86,7 +86,7 @@ describe('TransactionTable', () => {
     expect(expenseAmount).toBeInTheDocument();
 
     // Second row (income) should have green text
-    const incomeAmount = rows[1].querySelector('.text-green-600');
+    const incomeAmount = rows[1].querySelector('.text-green-700');
     expect(incomeAmount).toBeInTheDocument();
   });
 

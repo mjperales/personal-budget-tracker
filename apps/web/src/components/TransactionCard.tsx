@@ -5,7 +5,7 @@ import type { TransactionCardProps } from './TransactionCard.types';
 
 export function TransactionCard({ transaction, onDeleteClick }: TransactionCardProps) {
   const isIncome = transaction.type === 'income';
-  const amountColor = isIncome ? 'text-green-600' : 'text-red-600';
+  const amountColor = isIncome ? 'text-green-700' : 'text-red-600';
   const amountPrefix = isIncome ? '+' : '-';
 
   return (

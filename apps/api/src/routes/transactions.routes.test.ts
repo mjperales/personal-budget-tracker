@@ -159,6 +159,33 @@ describe('GET /api/v1/transactions', () => {
     expect(response.body.data).toHaveLength(1);
     expect(response.body.data[0].description).toBe('Groceries');
   });
+
+  it('returns 400 for invalid type parameter', async () => {
+    const app = createApp();
+    const response = await request(app).get('/api/v1/transactions?type=invalid');
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 400 for repeated category parameters', async () => {
+    const app = createApp();
+    const response = await request(app).get('/api/v1/transactions?category=Food&category=Other');
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('returns 400 for unexpected query parameters', async () => {
+    const app = createApp();
+    const response = await request(app).get('/api/v1/transactions?invalid=param');
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error.code).toBe('VALIDATION_ERROR');
+  });
 });
 
 describe('POST /api/v1/transactions', () => {

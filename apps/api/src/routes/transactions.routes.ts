@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import { success, created, noContent } from '../lib/responses.js';
 import { transactionStore } from '../stores/transaction-store.js';
 import type { TransactionFilters } from '../stores/transaction-store.js';
@@ -7,19 +8,31 @@ import { Errors } from '../lib/errors.js';
 
 export const transactionsRouter = Router();
 
+const TransactionQuerySchema = z.object({
+  type: z.enum(['income', 'expense']).optional(),
+  category: z.string().optional(),
+  search: z.string().optional(),
+}).strict();
+
 transactionsRouter.get('/', (req, res) => {
+  const result = TransactionQuerySchema.safeParse(req.query);
+  
+  if (!result.success) {
+    throw Errors.validation(result.error.format());
+  }
+
   const filters: TransactionFilters = {};
 
-  if (req.query.type) {
-    filters.type = req.query.type as 'income' | 'expense';
+  if (result.data.type) {
+    filters.type = result.data.type;
   }
 
-  if (req.query.category) {
-    filters.category = req.query.category as string;
+  if (result.data.category) {
+    filters.category = result.data.category;
   }
 
-  if (req.query.search) {
-    filters.search = req.query.search as string;
+  if (result.data.search) {
+    filters.search = result.data.search;
   }
 
   const transactions = transactionStore.getAll(filters);
