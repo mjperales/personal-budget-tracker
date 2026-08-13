@@ -31,15 +31,22 @@ export async function apiClient<T = unknown>(
     throw new Error(errorData.error?.message || 'API request failed');
   }
 
-  // Handle empty responses (e.g., DELETE with 204 No Content)
+  // Handle 204 No Content responses (e.g., DELETE operations)
+  // For these cases, T should be void and undefined is the expected return
+  if (response.status === 204) {
+    return undefined as unknown as T;
+  }
+
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
-    return undefined as T;
+    // Empty response body - safe when T is void
+    return undefined as unknown as T;
   }
 
   const text = await response.text();
   if (!text) {
-    return undefined as T;
+    // Empty response body - safe when T is void
+    return undefined as unknown as T;
   }
 
   const successData = JSON.parse(text) as ApiSuccessResponse<T>;
