@@ -9,9 +9,9 @@ routes/
   resource.routes.ts       # Plural resource name, e.g., transactions.routes.ts
   resource.routes.test.ts  # Colocated test
 
-services/
-  resource.service.ts      # Business logic for resource
-  resource.service.test.ts # Colocated test
+stores/
+  resource.store.ts        # In-memory data storage for resource
+  resource.store.test.ts   # Colocated test (if needed)
 
 middleware/
   kebab-case.ts           # e.g., error-handler.ts, auth.ts
@@ -162,15 +162,15 @@ import { success, created } from '../lib/responses.js';
 export const transactionsRouter = Router();
 
 // GET /api/v1/transactions
-transactionsRouter.get('/', async (req, res) => {
-  const transactions = await transactionsService.list();
+transactionsRouter.get('/', (req, res) => {
+  const transactions = transactionStore.getAll();
   success(res, transactions);
 });
 
 // POST /api/v1/transactions
-transactionsRouter.post('/', async (req, res) => {
+transactionsRouter.post('/', (req, res) => {
   const input = TransactionSchema.parse(req.body);
-  const transaction = await transactionsService.create(input);
+  const transaction = transactionStore.create(input);
   created(res, transaction);
 });
 ```
@@ -180,30 +180,40 @@ transactionsRouter.post('/', async (req, res) => {
 - Always use response helpers
 - Let error handler catch all errors
 
-### Service Layer
+### Store Layer
 
 ```typescript
-// services/transactions.service.ts
-export const transactionsService = {
-  async list(): Promise<Transaction[]> {
-    return db.select().from(transactions);
-  },
+// stores/transaction.store.ts
+class TransactionStore {
+  private transactions: Map<string, Transaction> = new Map();
 
-  async create(input: CreateTransactionInput): Promise<Transaction> {
-    const [transaction] = await db
-      .insert(transactions)
-      .values(input)
-      .returning();
+  getAll(filters?: TransactionFilters): Transaction[] {
+    let results = Array.from(this.transactions.values());
+    
+    if (filters?.type) {
+      results = results.filter(t => t.type === filters.type);
+    }
+    
+    return results;
+  }
+
+  create(input: Omit<Transaction, 'id'>): Transaction {
+    const id = crypto.randomUUID();
+    const transaction = { ...input, id };
+    this.transactions.set(id, transaction);
     return transaction;
-  },
-};
+  }
+}
+
+export const transactionStore = new TransactionStore();
 ```
 
-**Service conventions:**
-- Export object with methods (not class)
+**Store conventions:**
+- Encapsulate in-memory data storage
+- Export singleton instance
 - Return typed data
-- Throw errors for invalid operations
-- Keep services focused (single responsibility)
+- Throw `AppError` for invalid operations
+- Keep stores focused on data operations only
 
 ### Error Handling
 

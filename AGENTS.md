@@ -7,7 +7,7 @@ This file provides strategic guidance for AI agents working in this codebase. It
 ## What This Repository Is
 
 A full-stack personal budget tracking application built as a **pnpm monorepo**:
-- Express + TypeScript REST API with Drizzle ORM
+- Express + TypeScript REST API with in-memory data store
 - React + Vite SPA with Tailwind CSS v4
 - Testable architecture with comprehensive testing (Vitest, Supertest, RTL, Playwright)
 - Docker support for local development and deployment
@@ -68,9 +68,9 @@ A full-stack personal budget tracking application built as a **pnpm monorepo**:
 
 ## Scope Boundaries
 
-**API** (`apps/api/`): Express backend, database layer, business logic
+**API** (`apps/api/`): Express backend, in-memory storage, business logic
 - Routes define HTTP endpoints
-- Services contain business logic and ORM operations
+- Stores contain data operations (encapsulated in-memory storage)
 - Middleware handles cross-cutting concerns
 - Config uses Zod for environment validation
 

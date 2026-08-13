@@ -81,7 +81,10 @@ Response: { data: { status: "ok" } }
 **Transactions**
 ```
 GET /api/v1/transactions
-Query params: ?type=income|expense&category=Food&search=groceries
+Query params (all optional): 
+  ?type=income|expense        # Filter by transaction type
+  &category=Food              # Filter by category
+  &search=groceries           # Search in description
 Response: { data: Transaction[] }
 
 POST /api/v1/transactions
@@ -166,40 +169,70 @@ No HTTP server starts during tests → fast, isolated tests.
 **File Organization:**
 ```
 components/
-  TransactionHistory.tsx        # Container component
-  TransactionHistory.types.ts   # Component-specific types
-  TransactionHistory.test.tsx   # Component tests
-  TransactionTable.tsx          # Presentation component
-  TransactionTable.types.ts     # Table types
-  TransactionTable.test.tsx     # Table tests
-  ui/                           # Reusable primitives
+  # Container components (manage state and data)
+  TransactionHistory.tsx
+  TransactionHistory.types.ts
+  TransactionHistory.test.tsx
+  SummaryPanel.tsx
+  SummaryPanel.test.tsx
+  
+  # Form and dialog components
+  TransactionForm.tsx
+  TransactionForm.types.ts
+  TransactionForm.test.tsx
+  DeleteTransactionDialog.tsx
+  DeleteTransactionDialog.types.ts
+  DeleteTransactionDialog.test.tsx
+  
+  # Filter components
+  TransactionFilters.tsx
+  TransactionFilters.types.ts
+  TransactionFilters.test.tsx
+  
+  # Presentation components
+  TransactionTable.tsx
+  TransactionTable.types.ts
+  TransactionTable.test.tsx
+  TransactionCard.tsx
+  TransactionCard.types.ts
+  TransactionCard.test.tsx
+  TransactionCardList.tsx
+  
+  # Reusable UI primitives
+  ui/
     Card.tsx
     Card.types.ts
     Card.test.tsx
+    alert-dialog.tsx    # shadcn components
+    sonner.tsx
 
 pages/
-  BudgetTrackerPage.tsx         # Page component
+  BudgetTrackerPage.tsx         # Page component (orchestrates mutations)
   BudgetTrackerPage.test.tsx    # Page tests
 
 lib/
   api.ts                        # API client and types
-  format.ts                     # Formatting utilities
+  format.ts                     # Formatting utilities (currency, dates)
   format.test.ts                # Utility tests
-  utils.ts                      # General utilities
+  utils.ts                      # General utilities (cn helper)
 ```
 
 **Component Patterns:**
-- **Flat structure**: No folders per component
+- **Flat structure**: No folders per component (all components in `components/` directory)
 - **Separate types**: Use `.types.ts` for component-specific types
-- **Container/Presentation**: Separate data fetching from rendering
+- **Container/Presentation**: Separate data fetching/state management from rendering
 - **Responsive design**: Use Tailwind breakpoints (`md:`, `lg:`) for responsive layouts
 - **Shared logic**: Extract formatting and business logic to `lib/`
+- **Mutation orchestration**: Page-level components coordinate add/delete actions and refresh state
+- **Refresh pattern**: Use simple `refreshKey` counter to trigger data re-fetching
 
 **Component Layers:**
-- **Pages**: Top-level views mapped to URL routes
-- **Container Components**: Handle data fetching and state management
-- **Presentation Components**: Receive props, render UI, no API calls
-- **UI Primitives** (`ui/`): Reusable, generic components (Button, Card, etc.)
+- **Pages**: Top-level views, orchestrate mutations, manage `refreshKey`
+- **Container Components**: Handle data fetching, filter state, loading/error states
+- **Presentation Components**: Receive props, render UI, no API calls or state
+- **Form Components**: Handle user input, validation, submission
+- **Dialog Components**: Modal interactions (confirmation, alerts)
+- **UI Primitives** (`ui/`): Reusable, generic components (Card, AlertDialog, etc.)
 - **lib/**: Utilities and API client abstraction
 
 ### API Communication
@@ -304,11 +337,21 @@ Error Handler Middleware
 
 ### Web State Management
 
-Currently: React local state (useState, useEffect)
+**Current approach**: React local state (`useState`, `useEffect`)
 
-Future considerations:
-- Add context for global state when needed
-- Consider React Query for server state caching
+**State organization:**
+- **Page level**: Mutation coordination, `refreshKey` for triggering refetches
+- **Container level**: Filter state, loading/error states, fetched data
+- **Form level**: Form data, validation errors, submission state
+
+**Refresh pattern:**
+- Page-level `refreshKey` counter triggers child component refetches
+- Simple and explicit, no complex state management needed
+- Filters persist across mutations (don't reset on `refreshKey` change)
+
+**Future considerations:**
+- Add context for global state if needed (e.g., user preferences)
+- Consider React Query for server state caching if performance requires it
 - Keep state colocated with components when possible
 
 ## Accessibility
